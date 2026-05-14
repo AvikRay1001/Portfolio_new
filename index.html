@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avik Ray | Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;400;700;800&family=Space+Grotesk:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <a href="#home" class="logo">Avik/&gt;<br>Ray</a>
+        <div class="nav-links">
+            <a href="#home" class="active">&lt;Home&gt;</a>
+            <a href="#projects">Projects</a>
+            <a href="#services">Services</a>
+            <a href="#about">About</a>
+            <a href="#contact" class="btn-contact">Contact</a>
+        </div>
+    </nav>
+
+    <main>
+        <!-- Home / Hero Section -->
+        <section id="home" class="hero">
+            <!-- Animated ASCII Canvas Background -->
+            <div class="hero-bg-element">
+                <canvas id="ascii-canvas"></canvas>
+            </div>
+            
+            <div class="hero-content">
+                <p class="tagline typewriter-container"><span id="typewriter"></span><span class="cursor">|</span></p>
+                <h1 class="giant-name glitch" data-text="Avik Ray">Avik Ray</h1>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="section-padding">
+            <div class="section-header">
+                <h2>01. ABOUT_ME</h2>
+                <div class="line"></div>
+            </div>
+            <div class="about-grid">
+                <div class="about-text brutal-box">
+                    <p>Passionate <strong>Full-Stack Developer</strong> and <strong>Mobile App Enthusiast</strong> with a flair for crafting impactful solutions across web, mobile, and AI.</p>
+                    <p>Proficient in modern technologies like React, Next.js, Node.js, and React Native, I aspire to create innovative applications that blend functionality with user-centric design.</p>
+                </div>
+                <div class="skills brutal-box">
+                    <h3>> SKILLS_MATRIX</h3>
+                    <ul class="skills-list">
+                        <li>HTML / CSS</li>
+                        <li>JavaScript</li>
+                        <li>React / Next.js</li>
+                        <li>React Native</li>
+                        <li>Flutter</li>
+                        <li>Git & GitHub</li>
+                        <li>Tailwind CSS</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Services Section -->
+        <section id="services" class="section-padding">
+            <div class="section-header">
+                <h2>02. SERVICES</h2>
+                <div class="line"></div>
+            </div>
+            <div class="services-grid">
+                <div class="service-card brutal-box">
+                    <div class="service-icon">[ ML ]</div>
+                    <h3>ML & Data Science</h3>
+                    <p>Harness the power of data with cutting-edge machine learning and data science solutions. From predictive analytics to intelligent automation, I develop models that extract valuable insights and drive data-driven decision-making, ensuring accuracy, efficiency, and innovation.</p>
+                </div>
+                <div class="service-card brutal-box">
+                    <div class="service-icon">[ WEB ]</div>
+                    <h3>Web Development</h3>
+                    <p>Expert web development services tailored to your unique needs, ensuring high performance, responsive design, and seamless user experience. From interactive websites to scalable web applications, I bring your ideas to life with clean and efficient code.</p>
+                </div>
+                <div class="service-card brutal-box">
+                    <div class="service-icon">[ APP ]</div>
+                    <h3>App Development</h3>
+                    <p>Building high-performance mobile applications that enhance user experience and bring your ideas to life. From transforming websites into mobile apps to creating fully native solutions, I ensure seamless functionality and intuitive design.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Projects Section -->
+        <section id="projects" class="section-padding">
+            <div class="section-header">
+                <h2>03. PROJECTS</h2>
+                <div class="line"></div>
+            </div>
+            <div class="projects-list">
+                <!-- Project 1 -->
+                <div class="project-row brutal-box">
+                    <div class="project-info">
+                        <span class="project-type">// WEBSITE</span>
+                        <h3>CodersHub</h3>
+                        <p>Interactive Code Editor. Helps people edit code in the most popular languages and also share them to a community of people.</p>
+                    </div>
+                    <div class="project-action">
+                        <a href="https://github.com/AvikRay1001/CodersHub" target="_blank" rel="noopener noreferrer" class="brutal-btn">VIEW_SOURCE</a>
+                    </div>
+                </div>
+                <!-- Project 2 -->
+                <div class="project-row brutal-box">
+                    <div class="project-info">
+                        <span class="project-type">// APP</span>
+                        <h3>ShareIt</h3>
+                        <p>Efficient and fast wireless file transfer application. Aids one in wirelessly tranferring files between different devices without the need for internet.</p>
+                    </div>
+                    <div class="project-action">
+                        <a href="https://github.com/AvikRay1001/ShareIt" target="_blank" rel="noopener noreferrer" class="brutal-btn">VIEW_SOURCE</a>
+                    </div>
+                </div>
+                <!-- Project 3 -->
+                <div class="project-row brutal-box">
+                    <div class="project-info">
+                        <span class="project-type">// DESKTOP / AI</span>
+                        <h3>CV Space Shooter</h3>
+                        <p>An interactive space shooter game that uses computer vision and hand tracking to control the player's movement and shooting actions.</p>
+                    </div>
+                    <div class="project-action">
+                        <a href="https://github.com/AvikRay1001/SpaceShooter" target="_blank" rel="noopener noreferrer" class="brutal-btn">VIEW_SOURCE</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="section-padding">
+            <div class="section-header">
+                <h2>04. CONTACT_ME</h2>
+                <div class="line"></div>
+            </div>
+            <div class="contact-container brutal-box">
+                <div class="contact-info">
+                    <h3>INITIATE_COMMS</h3>
+                    <p>I will read all emails. Send me any message you want and I'll get back to you.</p>
+                    <p>I need your Name and Email Address, but you won't receive anything other than your reply.</p>
+                    
+                    <div class="social-links">
+                        <a href="#" class="brutal-link">[ GITHUB ]</a>
+                        <a href="#" class="brutal-link">[ LINKEDIN ]</a>
+                        <a href="#" class="brutal-link">[ TWITTER ]</a>
+                    </div>
+                </div>
+                <form class="contact-form" onsubmit="event.preventDefault();">
+                    <div class="form-group">
+                        <label for="name">NAME</label>
+                        <input type="text" id="name" placeholder="ENTER_NAME" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">EMAIL</label>
+                        <input type="email" id="email" placeholder="ENTER_EMAIL" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="message">MESSAGE</label>
+                        <textarea id="message" rows="5" placeholder="ENTER_MESSAGE" required></textarea>
+                    </div>
+                    <button type="submit" class="brutal-btn submit-btn">TRANSMIT</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <footer class="brutal-footer">
+        <p>&copy; 2026 Avik Ray. System Online.</p>
+        <a href="#home" class="back-to-top">[ BACK_TO_TOP ]</a>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
