@@ -5,14 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Avik Ray | Portfolio</title>
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;400;700;800&family=Space+Grotesk:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=21">
 </head>
 <body>
     <!-- Navigation -->
     <nav class="navbar">
         <a href="#home" class="logo">Avik/&gt;<br>Ray</a>
         <div class="nav-links">
-            <a href="#home" class="active">&lt;Home&gt;</a>
+            <a href="#home" class="active">Home</a>
             <a href="#projects">Projects</a>
             <a href="#services">Services</a>
             <a href="#about">About</a>
@@ -29,33 +29,41 @@
             </div>
             
             <div class="hero-content">
-                <p class="tagline typewriter-container"><span id="typewriter"></span><span class="cursor">|</span></p>
+                <p class="tagline scramble-container"><span id="scramble-text"></span></p>
                 <h1 class="giant-name glitch" data-text="Avik Ray">Avik Ray</h1>
             </div>
         </section>
 
         <!-- About Section -->
-        <section id="about" class="section-padding">
-            <div class="section-header">
-                <h2>01. ABOUT_ME</h2>
-                <div class="line"></div>
+        <section id="about" class="section-padding about-devolio">
+            <div class="devolio-badge">
+                <span class="icon">👤</span> ABOUT ME
             </div>
-            <div class="about-grid">
-                <div class="about-text brutal-box">
-                    <p>Passionate <strong>Full-Stack Developer</strong> and <strong>Mobile App Enthusiast</strong> with a flair for crafting impactful solutions across web, mobile, and AI.</p>
-                    <p>Proficient in modern technologies like React, Next.js, Node.js, and React Native, I aspire to create innovative applications that blend functionality with user-centric design.</p>
-                </div>
-                <div class="skills brutal-box">
-                    <h3>> SKILLS_MATRIX</h3>
-                    <ul class="skills-list">
-                        <li>HTML / CSS</li>
-                        <li>JavaScript</li>
-                        <li>React / Next.js</li>
-                        <li>React Native</li>
-                        <li>Flutter</li>
-                        <li>Git & GitHub</li>
-                        <li>Tailwind CSS</li>
-                    </ul>
+            
+            <h2 class="devolio-heading">Building impactful solutions with code, logic, and a bit of chaos<span class="cursor"></span></h2>
+            
+            <div class="devolio-card-outer">
+                <div class="devolio-card-inner">
+                    <p>Avik is a passionate Full-Stack Developer and Mobile App Enthusiast with a flair for crafting impactful solutions across web, mobile, and AI.</p>
+                    <p>Proficient in modern technologies like React, Next.js, Node.js, and React Native. They focus on clean code and user-centric design.</p>
+                    
+                    <div class="devolio-skills" id="physics-container">
+                        <ul class="skills-list">
+                            <li>HTML / CSS</li>
+                            <li>JavaScript</li>
+                            <li>TypeScript</li>
+                            <li>React / Next.js</li>
+                            <li>Node.js</li>
+                            <li>React Native</li>
+                            <li>Flutter</li>
+                            <li>MongoDB</li>
+                            <li>Tailwind CSS</li>
+                            <li>Firebase</li>
+                            <li>Git & GitHub</li>
+                            <li>Docker</li>
+                            <li>Figma</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </section>
@@ -170,6 +178,10 @@
         <a href="#home" class="back-to-top">[ BACK_TO_TOP ]</a>
     </footer>
 
+    <!-- Custom Cursor -->
+    <canvas id="cursor-trail-canvas"></canvas>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

@@ -63,7 +63,7 @@ a {
     justify-content: space-between;
     align-items: center;
     padding: 1rem 2rem;
-    position: fixed;
+    position: absolute;
     top: 20px;
     left: 5%;
     width: 90%;
@@ -89,14 +89,41 @@ a {
     font-size: 1rem;
     position: relative;
     font-weight: 500;
+    display: inline-flex;
+    align-items: center;
 }
 
-.nav-links a.active {
+.nav-links a:not(.btn-contact)::before {
+    content: "<";
+    opacity: 0;
+    transition: opacity 0.2s;
+    margin-right: 2px;
+    font-style: normal;
+}
+
+.nav-links a:not(.btn-contact)::after {
+    content: ">";
+    opacity: 0;
+    transition: opacity 0.2s;
+    margin-left: 2px;
+    font-style: normal;
+}
+
+.nav-links a:not(.btn-contact):hover::before,
+.nav-links a:not(.btn-contact):hover::after,
+.nav-links a.active:not(.btn-contact)::before,
+.nav-links a.active:not(.btn-contact)::after {
+    opacity: 1;
+}
+
+.nav-links a.active:not(.btn-contact) {
     font-style: italic;
+    color: var(--primary-color);
 }
 
-.nav-links a:hover {
-    color: #888;
+.nav-links a:not(.btn-contact):hover {
+    color: var(--primary-color);
+    font-style: italic;
 }
 
 .btn-contact {
@@ -104,11 +131,37 @@ a {
     color: var(--bg-color) !important;
     padding: 0.5rem 1.5rem;
     font-weight: bold;
+    position: relative;
+    border: none;
+}
+
+.btn-contact::before {
+    content: '';
+    position: absolute;
+    top: -6px; left: -6px; right: -6px; bottom: -6px;
+    background:
+        linear-gradient(var(--primary-color), var(--primary-color)) top left / 12px 2px no-repeat,
+        linear-gradient(var(--primary-color), var(--primary-color)) top left / 2px 12px no-repeat,
+        linear-gradient(var(--primary-color), var(--primary-color)) top right / 12px 2px no-repeat,
+        linear-gradient(var(--primary-color), var(--primary-color)) top right / 2px 12px no-repeat,
+        linear-gradient(var(--primary-color), var(--primary-color)) bottom left / 12px 2px no-repeat,
+        linear-gradient(var(--primary-color), var(--primary-color)) bottom left / 2px 12px no-repeat,
+        linear-gradient(var(--primary-color), var(--primary-color)) bottom right / 12px 2px no-repeat,
+        linear-gradient(var(--primary-color), var(--primary-color)) bottom right / 2px 12px no-repeat;
+    opacity: 0;
+    transform: scale(0.9);
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.btn-contact:hover::before {
+    opacity: 1;
+    transform: scale(1);
 }
 
 .btn-contact:hover {
-    background-color: #ccc;
-    color: var(--bg-color);
+    background-color: var(--primary-color);
+    color: var(--bg-color) !important;
 }
 
 /* Brutal Components */
@@ -198,23 +251,27 @@ a {
     align-self: flex-start;
     text-transform: uppercase;
     font-family: var(--font-mono);
-    text-shadow: 4px 4px 0px rgba(255, 255, 255, 0.15); /* Permanent brutalist shadow */
 }
 
-.typewriter-container {
+.scramble-container {
     align-self: flex-start;
     margin-bottom: 1rem;
+    font-size: 2rem;
+    font-style: normal;
+    font-weight: 800;
+    color: var(--primary-color);
+    text-transform: uppercase;
+    font-family: var(--font-mono);
+    text-shadow: 4px 4px 0px rgba(255, 255, 255, 0.15);
+    min-height: 2.5rem; /* Prevent layout shift while scrambling */
     display: flex;
     align-items: center;
+    letter-spacing: -2px;
 }
 
-.cursor {
-    display: inline-block;
-    width: 12px;
-    height: 1.2em;
-    background-color: var(--primary-color);
-    margin-left: 6px;
-    animation: blinker 1s step-end infinite;
+.scramble-container .dud {
+    color: #555;
+    opacity: 0.8;
 }
 
 .giant-name {
@@ -252,36 +309,117 @@ a {
     flex-grow: 1;
 }
 
-/* About Section */
-.about-grid {
-    display: grid;
-    grid-template-columns: 3fr 2fr;
-    gap: 3rem;
+/* Devolio About Section */
+.about-devolio {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding-top: 4rem;
 }
 
-.skills h3 {
+.devolio-badge {
+    border: 1px solid var(--primary-color);
+    padding: 0.5rem 1.2rem;
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    font-size: 1rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 3rem;
+    font-weight: bold;
+}
+
+.devolio-heading {
+    font-family: var(--font-mono);
+    font-size: 2.8rem;
+    font-weight: 400;
+    line-height: 1.4;
+    max-width: 900px;
+    margin-bottom: 4rem;
+    letter-spacing: -1px;
+}
+
+.devolio-heading .cursor {
+    display: inline-block;
+    width: 15px;
+    height: 2.2rem;
+    background-color: var(--primary-color);
+    vertical-align: middle;
+    margin-left: 8px;
+    animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+.devolio-card-outer {
+    background-color: var(--primary-color);
+    padding: 3rem 4rem;
+    width: 100%;
+    max-width: 1000px;
+    box-sizing: border-box;
+}
+
+.devolio-card-inner {
+    border: 1px solid var(--bg-color);
+    padding: 2.5rem 3rem;
+    text-align: left;
+}
+
+.devolio-card-inner p {
+    color: var(--bg-color);
+    font-family: var(--font-mono);
+    font-size: 1.2rem;
+    line-height: 1.6;
     margin-bottom: 1.5rem;
-    border-bottom: var(--border-width) solid var(--border-color);
-    padding-bottom: 0.5rem;
+}
+
+.devolio-card-inner p:last-child {
+    margin-bottom: 0;
+}
+
+.devolio-skills {
+    margin-top: 2rem;
+    border-top: 1px solid var(--bg-color);
+    padding-top: 2rem;
+    position: relative;
+    height: 220px;
+    overflow: hidden;
 }
 
 .skills-list {
     list-style: none;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
+    margin: 0;
+    padding: 0;
 }
 
 .skills-list li {
-    border: var(--border-width) solid var(--border-color);
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0; /* Hidden until JS positions them */
+    border: 1px solid var(--bg-color);
+    color: var(--bg-color);
+    background-color: var(--primary-color);
     padding: 0.5rem 1rem;
     font-size: 1rem;
     font-weight: bold;
+    user-select: none;
+    cursor: grab;
+    z-index: 10;
+}
+
+.skills-list li:active {
+    cursor: grabbing;
 }
 
 .skills-list li:hover {
-    background-color: var(--primary-color);
-    color: var(--bg-color);
+    background-color: var(--bg-color);
+    color: var(--primary-color);
 }
 
 /* Services Section */
@@ -442,5 +580,19 @@ a {
     }
     .hero-content h1 {
         font-size: 3.5rem;
+    }
+}
+
+/* Custom Cursor */
+@media (pointer: fine) {
+    #cursor-trail-canvas {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        pointer-events: none;
+        z-index: 9999;
+        mix-blend-mode: difference;
     }
 }

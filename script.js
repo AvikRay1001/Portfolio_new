@@ -1,46 +1,77 @@
-// Typewriter Effect
-const roles = [
-    "Full-Stack Developer.",
-    "Mobile Application Developer.",
-    "ML & Data Science Enthusiast.",
-    "Problem Solver."
-];
-
-let roleIndex = 0;
-let charIndex = 0;
-let isDeleting = false;
-let typeSpeed = 100;
-const typewriterElement = document.getElementById("typewriter");
-
-function type() {
-    const currentRole = roles[roleIndex];
-    
-    if (isDeleting) {
-        typewriterElement.textContent = currentRole.substring(0, charIndex - 1);
-        charIndex--;
-        typeSpeed = 50; // Faster when deleting
-    } else {
-        typewriterElement.textContent = currentRole.substring(0, charIndex + 1);
-        charIndex++;
-        typeSpeed = 100;
+// Cyber Scramble / Decode Effect
+class TextScramble {
+    constructor(el) {
+        this.el = el;
+        this.chars = '!<>-_\\\\/[]{}—=+*^?#________';
+        this.update = this.update.bind(this);
     }
-
-    if (!isDeleting && charIndex === currentRole.length) {
-        isDeleting = true;
-        typeSpeed = 2000; // Pause at end of word
-    } else if (isDeleting && charIndex === 0) {
-        isDeleting = false;
-        roleIndex = (roleIndex + 1) % roles.length;
-        typeSpeed = 500; // Pause before typing next word
+    setText(newText) {
+        const oldText = this.el.innerText;
+        const length = Math.max(oldText.length, newText.length);
+        const promise = new Promise((resolve) => this.resolve = resolve);
+        this.queue = [];
+        for (let i = 0; i < length; i++) {
+            const from = oldText[i] || '';
+            const to = newText[i] || '';
+            const start = Math.floor(Math.random() * 40);
+            const end = start + Math.floor(Math.random() * 40);
+            this.queue.push({ from, to, start, end });
+        }
+        cancelAnimationFrame(this.frameRequest);
+        this.frame = 0;
+        this.update();
+        return promise;
     }
-
-    setTimeout(type, typeSpeed);
+    update() {
+        let output = '';
+        let complete = 0;
+        for (let i = 0, n = this.queue.length; i < n; i++) {
+            let { from, to, start, end, char } = this.queue[i];
+            if (this.frame >= end) {
+                complete++;
+                output += to;
+            } else if (this.frame >= start) {
+                if (!char || Math.random() < 0.28) {
+                    char = this.randomChar();
+                    this.queue[i].char = char;
+                }
+                output += `<span class="dud">${char}</span>`;
+            } else {
+                output += from;
+            }
+        }
+        this.el.innerHTML = output;
+        if (complete === this.queue.length) {
+            this.resolve();
+        } else {
+            this.frameRequest = requestAnimationFrame(this.update);
+            this.frame++;
+        }
+    }
+    randomChar() {
+        return this.chars[Math.floor(Math.random() * this.chars.length)];
+    }
 }
 
-// Start typewriter when DOM loads
+const phrases = [
+    "Full-Stack Developer",
+    "Mobile App Developer",
+    "ML & Data Science Enthusiast",
+    "Cyber-Brutalist Architect"
+];
+
 document.addEventListener("DOMContentLoaded", () => {
-    if (typewriterElement) {
-        setTimeout(type, 1000);
+    const el = document.getElementById("scramble-text");
+    if(el) {
+        const fx = new TextScramble(el);
+        let counter = 0;
+        const next = () => {
+            fx.setText(phrases[counter]).then(() => {
+                setTimeout(next, 2000);
+            });
+            counter = (counter + 1) % phrases.length;
+        };
+        setTimeout(next, 1000);
     }
 });
 
@@ -124,4 +155,224 @@ document.addEventListener("DOMContentLoaded", () => {
 
         setInterval(draw, 50);
     }
+});
+
+// Active Nav Link on Scroll
+document.addEventListener("DOMContentLoaded", () => {
+    const sections = document.querySelectorAll("section");
+    const navLinks = document.querySelectorAll(".nav-links a:not(.btn-contact)");
+
+    const navObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                navLinks.forEach((link) => {
+                    link.classList.remove("active");
+                    if (link.getAttribute("href") === `#${entry.target.id}`) {
+                        link.classList.add("active");
+                    }
+                });
+            }
+        });
+    }, { threshold: 0.3 }); // Trigger when 30% of the section is visible
+
+    sections.forEach((section) => {
+        navObserver.observe(section);
+    });
+});
+
+// Canvas ASCII Trail Effect
+document.addEventListener("DOMContentLoaded", () => {
+    const canvas = document.getElementById("cursor-trail-canvas");
+    if (!canvas || window.matchMedia('(pointer: coarse)').matches) return;
+
+    const ctx = canvas.getContext("2d");
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+
+    function resize() {
+        canvas.width = width = window.innerWidth;
+        canvas.height = height = window.innerHeight;
+    }
+    window.addEventListener("resize", resize);
+    resize();
+
+    const particles = [];
+    const chars = ['0', '1', '!', '<', '>', '-', '_', '\\', '/', '[', ']', '{', '}', '=', '+', '*', '^', '?', '#', '@'];
+    let lastMouse = { x: null, y: null };
+    let distanceAccumulator = 0;
+    const spacing = 22; // Balanced spacing for a moderately dense trail
+
+    document.addEventListener("mousemove", (e) => {
+        if (lastMouse.x !== null) {
+            const dx = e.clientX - lastMouse.x;
+            const dy = e.clientY - lastMouse.y;
+            const distance = Math.hypot(dx, dy);
+            
+            distanceAccumulator += distance;
+            
+            while (distanceAccumulator >= spacing) {
+                // Approximate the spawn position along the movement vector
+                const ratio = Math.max(0, (distance - (distanceAccumulator - spacing))) / distance || 0;
+                
+                particles.push({
+                    // Offset by 12px right and 16px down to spawn from the tail of a standard cursor
+                    x: lastMouse.x + dx * ratio + 12 + (Math.random() - 0.5) * 4, 
+                    y: lastMouse.y + dy * ratio + 16 + (Math.random() - 0.5) * 4,
+                    char: chars[Math.floor(Math.random() * chars.length)],
+                    life: 1.0,
+                    // Subtle drift
+                    vx: (Math.random() - 0.5) * 0.5,
+                    vy: (Math.random() - 0.5) * 0.5,
+                });
+                distanceAccumulator -= spacing;
+            }
+        }
+        lastMouse.x = e.clientX;
+        lastMouse.y = e.clientY;
+    });
+
+    function animate() {
+        ctx.clearRect(0, 0, width, height);
+        
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+
+        for (let i = particles.length - 1; i >= 0; i--) {
+            let p = particles[i];
+            
+            p.x += p.vx;
+            p.y += p.vy;
+            p.life -= 0.02; // Fade out speed
+            
+            if (p.life <= 0) {
+                particles.splice(i, 1);
+                continue;
+            }
+            
+            // Characters shrink slightly as they fade
+            const size = Math.max(0.1, p.life) * 20; 
+            ctx.font = `bold ${size}px "JetBrains Mono", monospace`;
+            
+            // Brutalist white fading to transparent
+            ctx.fillStyle = `rgba(255, 255, 255, ${p.life})`;
+            
+            ctx.fillText(p.char, p.x, p.y);
+        }
+
+        requestAnimationFrame(animate);
+    }
+    animate();
+});
+
+// Skills Physics using Matter.js
+document.addEventListener("DOMContentLoaded", () => {
+    const container = document.getElementById('physics-container');
+    const skillItems = document.querySelectorAll('.skills-list li');
+    
+    // Only run if elements exist and Matter is loaded
+    if (!container || skillItems.length === 0 || typeof Matter === 'undefined') return;
+
+    // Matter.js module aliases
+    const Engine = Matter.Engine,
+          Runner = Matter.Runner,
+          Bodies = Matter.Bodies,
+          Composite = Matter.Composite,
+          Mouse = Matter.Mouse,
+          MouseConstraint = Matter.MouseConstraint;
+
+    // Create engine
+    const engine = Engine.create();
+    engine.gravity.y = 0.4; // Reduce gravity for a lighter, floatier feel
+    
+    const width = container.clientWidth;
+    const height = container.clientHeight;
+    const wallThickness = 60;
+
+    // Static bodies for boundaries
+    const ground = Bodies.rectangle(width / 2, height + wallThickness / 2, width + 200, wallThickness, { isStatic: true });
+    const leftWall = Bodies.rectangle(0 - wallThickness / 2, height / 2, wallThickness, height * 2, { isStatic: true });
+    const rightWall = Bodies.rectangle(width + wallThickness / 2, height / 2, wallThickness, height * 2, { isStatic: true });
+
+    Composite.add(engine.world, [ground, leftWall, rightWall]);
+
+    // Map DOM elements to Physics bodies
+    const domBodies = [];
+    
+    skillItems.forEach((item, index) => {
+        // Read actual DOM size
+        const w = item.offsetWidth;
+        const h = item.offsetHeight;
+        
+        // Stagger spawn positions horizontally
+        const xPos = Math.random() * (width - 100) + 50; 
+        const yPos = -20 - (index * 30); // Spawn closer to the box top to reduce fall time
+        
+        // Create physics body
+        const body = Bodies.rectangle(xPos, yPos, w, h, {
+            restitution: 0.6, // Bounciness
+            friction: 0.1,
+            frictionAir: 0.02,
+            angle: Math.random() * 0.2 - 0.1 // Slight initial tilt
+        });
+        
+        Composite.add(engine.world, body);
+        
+        domBodies.push({
+            elem: item,
+            body: body,
+            w: w,
+            h: h
+        });
+        
+        // Make element visible now that physics holds its state
+        item.style.opacity = 1;
+    });
+
+    // Add mouse control
+    const mouse = Mouse.create(container);
+    const mouseConstraint = MouseConstraint.create(engine, {
+        mouse: mouse,
+        constraint: {
+            stiffness: 0.2,
+            render: {
+                visible: false
+            }
+        }
+    });
+    Composite.add(engine.world, mouseConstraint);
+
+    // Remove scroll interference from Matter's mouse listener
+    mouse.element.removeEventListener("mousewheel", mouse.mousewheel);
+    mouse.element.removeEventListener("DOMMouseScroll", mouse.mousewheel);
+
+    // Create runner
+    const runner = Runner.create();
+    
+    // Update DOM inside requestAnimationFrame loop to match physics
+    function updateDOM() {
+        domBodies.forEach((db) => {
+            const { elem, body, w, h } = db;
+            // Translate by top-left corner instead of center
+            elem.style.transform = `translate(${body.position.x - w/2}px, ${body.position.y - h/2}px) rotate(${body.angle}rad)`;
+        });
+        requestAnimationFrame(updateDOM);
+    }
+    
+    // Wait until section is scrolled into view before dropping
+    const observer = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting) {
+            Runner.run(runner, engine);
+            updateDOM();
+            observer.disconnect(); // Only drop once
+        }
+    }, { threshold: 0.3 });
+    
+    observer.observe(container);
+    
+    // Handle window resize gracefully
+    window.addEventListener('resize', () => {
+        const newWidth = container.clientWidth;
+        Matter.Body.setPosition(ground, { x: newWidth / 2, y: height + wallThickness / 2 });
+        Matter.Body.setPosition(rightWall, { x: newWidth + wallThickness / 2, y: height / 2 });
+    });
 });
