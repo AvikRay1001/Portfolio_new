@@ -157,6 +157,64 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
+// Typewriter effect for About heading
+document.addEventListener("DOMContentLoaded", () => {
+    const text = "Building ideas into reality.";
+    const typewriterElement = document.getElementById("typewriter-heading");
+    let index = 0;
+    
+    if (typewriterElement) {
+        const observer = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting) {
+                typeWriter();
+                observer.disconnect();
+            }
+        }, { threshold: 0.3 });
+        
+        const aboutSection = document.getElementById("about");
+        if (aboutSection) {
+            observer.observe(aboutSection);
+        }
+
+        function typeWriter() {
+            if (index < text.length) {
+                typewriterElement.innerHTML += text.charAt(index);
+                index++;
+                setTimeout(typeWriter, 75); // Balanced typing speed
+            }
+        }
+    }
+});
+
+// Typewriter effect for Services heading
+document.addEventListener("DOMContentLoaded", () => {
+    const text = "What I do best";
+    const typewriterElement = document.getElementById("typewriter-services");
+    let index = 0;
+    
+    if (typewriterElement) {
+        const observer = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting) {
+                typeWriter();
+                observer.disconnect();
+            }
+        }, { threshold: 0.3 });
+        
+        const servicesSection = document.getElementById("services");
+        if (servicesSection) {
+            observer.observe(servicesSection);
+        }
+
+        function typeWriter() {
+            if (index < text.length) {
+                typewriterElement.innerHTML += text.charAt(index);
+                index++;
+                setTimeout(typeWriter, 75); // Balanced typing speed
+            }
+        }
+    }
+});
+
 // Active Nav Link on Scroll
 document.addEventListener("DOMContentLoaded", () => {
     const sections = document.querySelectorAll("section");
@@ -374,5 +432,33 @@ document.addEventListener("DOMContentLoaded", () => {
         const newWidth = container.clientWidth;
         Matter.Body.setPosition(ground, { x: newWidth / 2, y: height + wallThickness / 2 });
         Matter.Body.setPosition(rightWall, { x: newWidth + wallThickness / 2, y: height / 2 });
+    });
+});
+
+// Accordion Logic
+document.addEventListener("DOMContentLoaded", () => {
+    const accordionHeaders = document.querySelectorAll(".accordion-header");
+
+    accordionHeaders.forEach(header => {
+        header.addEventListener("click", () => {
+            // Toggle active class on header
+            header.classList.toggle("active");
+
+            // Toggle max-height on the body for smooth animation
+            const body = header.nextElementSibling;
+            if (header.classList.contains("active")) {
+                body.style.maxHeight = body.scrollHeight + "px";
+            } else {
+                body.style.maxHeight = 0;
+            }
+
+            // Close other open accordion items
+            accordionHeaders.forEach(otherHeader => {
+                if (otherHeader !== header && otherHeader.classList.contains("active")) {
+                    otherHeader.classList.remove("active");
+                    otherHeader.nextElementSibling.style.maxHeight = 0;
+                }
+            });
+        });
     });
 });

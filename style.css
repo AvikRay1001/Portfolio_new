@@ -423,22 +423,117 @@ a {
 }
 
 /* Services Section */
-.services-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 3rem;
+/* Services Section (Accordion) */
+.services-accordion-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.service-icon {
-    font-size: 2rem;
-    font-weight: bold;
-    margin-bottom: 1.5rem;
-    color: var(--primary-color);
+.services-header-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 3rem;
 }
 
-.service-card h3 {
+.services-badge {
     margin-bottom: 1rem;
-    font-size: 1.8rem;
+}
+
+.services-badge .icon {
+    background-color: var(--primary-color);
+    color: var(--bg-color);
+    padding: 0 4px;
+    font-weight: bold;
+    display: inline-block;
+    margin-right: 4px;
+}
+
+.services-main-title {
+    font-family: var(--font-mono);
+    font-size: 2.8rem;
+    font-weight: 400;
+    line-height: 1.4;
+    letter-spacing: -1px;
+    text-transform: none;
+}
+
+.services-main-title .cursor {
+    display: inline-block;
+    width: 15px;
+    height: 2.5rem;
+    background-color: var(--primary-color);
+    vertical-align: middle;
+    margin-left: 8px;
+    animation: blink 1s step-end infinite;
+}
+
+.accordion-outer-container {
+    background-color: var(--primary-color);
+    padding: 3rem;
+    width: 100%;
+    max-width: 900px;
+}
+
+.accordion-inner {
+    border: 1px solid var(--bg-color);
+    padding: 2rem;
+}
+
+.accordion-item {
+    border: 1px solid var(--bg-color);
+    margin-bottom: 1rem;
+}
+
+.accordion-item:last-child {
+    margin-bottom: 0;
+}
+
+.accordion-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: var(--primary-color);
+    color: var(--bg-color);
+    border: none;
+    font-family: var(--font-mono);
+    font-size: 1.2rem;
+    cursor: pointer;
+    text-align: left;
+    transition: background-color 0.2s;
+}
+
+.accordion-header:hover {
+    background-color: #f0f0f0;
+}
+
+.accordion-header .chevron {
+    font-size: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.accordion-header.active .chevron {
+    transform: rotate(180deg);
+}
+
+.accordion-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    background-color: var(--primary-color);
+    color: var(--bg-color);
+}
+
+.accordion-content {
+    padding: 0 1rem 1rem 1rem;
+}
+
+.accordion-content p {
+    margin: 0;
+    font-size: 1rem;
 }
 
 /* Projects Section */
