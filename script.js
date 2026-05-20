@@ -215,6 +215,35 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
+// Typewriter effect for Projects heading
+document.addEventListener("DOMContentLoaded", () => {
+    const text = "Some of the things I've built, loved, and occasionally debugged at 2 a.m";
+    const typewriterElement = document.getElementById("typewriter-projects");
+    let index = 0;
+    
+    if (typewriterElement) {
+        const observer = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting) {
+                typeWriter();
+                observer.disconnect();
+            }
+        }, { threshold: 0.3 });
+        
+        const projectsSection = document.getElementById("projects");
+        if (projectsSection) {
+            observer.observe(projectsSection);
+        }
+
+        function typeWriter() {
+            if (index < text.length) {
+                typewriterElement.innerHTML += text.charAt(index);
+                index++;
+                setTimeout(typeWriter, 50); // Slightly faster for longer text
+            }
+        }
+    }
+});
+
 // Active Nav Link on Scroll
 document.addEventListener("DOMContentLoaded", () => {
     const sections = document.querySelectorAll("section");
