@@ -4,8 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Avik Ray | Portfolio</title>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;400;700;800&family=Space+Grotesk:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;400;700;800&family=Space+Grotesk:wght@300;400;600;700&family=Kalam:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css?v=21">
+    
+    <!-- Tegaki Import Map -->
+    <script type="importmap">
+      {
+        "imports": {
+          "tegaki/wc": "./node_modules/tegaki/dist/wc/index.mjs",
+          "tegaki/fonts/caveat": "./node_modules/tegaki/dist/fonts/caveat/bundle.mjs",
+          "tegaki/fonts/unknown": "./unknown/unknown/bundle.js",
+          "tegaki/fonts/sacramento": "./Sacramento/unknown/bundle.js",
+          "tegaki/fonts/suez-one": "./node_modules/tegaki/dist/fonts/suez-one/bundle.mjs"
+        }
+      }
+    </script>
+    <!-- Tegaki Init -->
+    <script type="module">
+      import { registerTegakiElement } from 'tegaki/wc';
+      import caveat from 'tegaki/fonts/caveat';
+      import unknownFont from 'tegaki/fonts/unknown';
+      import sacramentoFont from 'tegaki/fonts/sacramento';
+      import suezOne from 'tegaki/fonts/suez-one';
+      
+      // Register custom element
+      registerTegakiElement('tegaki-renderer');
+      
+      const el = document.getElementById('hero-tegaki-name');
+      if (el) {
+          el.font = sacramentoFont;
+      }
+    </script>
 </head>
 <body>
     <!-- Navigation -->
@@ -29,8 +58,12 @@
             </div>
             
             <div class="hero-content">
-                <p class="tagline scramble-container"><span id="scramble-text"></span></p>
-                <h1 class="giant-name glitch" data-text="Avik Ray">Avik Ray</h1>
+                <p class="tagline scramble-container" style="font-family: 'Kalam', cursive; text-transform: none; font-size: 2.5rem; font-weight: 700; margin-bottom: 1rem;">
+                    <span id="scramble-text">Full-Stack Developer</span>
+                </p>
+                <h1 class="giant-name" style="overflow: visible;">
+                    <tegaki-renderer id="hero-tegaki-name" text="Avik Ray" speed="1.8"></tegaki-renderer>
+                </h1>
             </div>
         </section>
 

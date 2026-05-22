@@ -1,0 +1,23 @@
+{
+  "name": "portfolio_new",
+  "version": "1.0.0",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AvikRay1001/Portfolio_new.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AvikRay1001/Portfolio_new/issues"
+  },
+  "homepage": "https://github.com/AvikRay1001/Portfolio_new#readme",
+  "description": "",
+  "dependencies": {
+    "tegaki": "^0.17.1"
+  }
+}

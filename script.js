@@ -56,8 +56,7 @@ class TextScramble {
 const phrases = [
     "Full-Stack Developer",
     "Mobile App Developer",
-    "ML & Data Science Enthusiast",
-    "Cyber-Brutalist Architect"
+    "ML & Data Science Enthusiast"
 ];
 
 document.addEventListener("DOMContentLoaded", () => {
