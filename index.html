@@ -244,39 +244,93 @@
                 </div>
         </section>
 
+        <!-- Experience Section -->
+        <section id="experience" class="section-padding">
+            <div class="devolio-badge" style="margin: 0 auto 4rem auto; display: flex; justify-content: center; width: max-content;">
+                <span class="icon">💼</span> EXPERIENCE
+            </div>
+            
+            <h2 class="devolio-heading" style="text-align: center; margin: 0 auto 4rem auto; display: block;">The Journey So Far</h2>
+            
+            <div class="retro-terminal">
+                <div class="retro-terminal-header">
+                    <span class="prompt">&gt;_ /RETRO RESUME</span>
+                </div>
+                <div class="retro-terminal-body">
+                    <div class="resume-profile">
+                        <div class="resume-info">
+                            <p><strong>&gt; NAME:</strong> Avik Ray</p>
+                            <p><strong>&gt; LOCATION:</strong> Kolkata, West Bengal</p>
+                            <p><strong>&gt; ROLE:</strong> Software Developer</p>
+                            <p><strong>&gt; CONTACT:</strong> avikray1010@gmail.com</p>
+                        </div>
+                    </div>
+                    
+                    <div class="resume-experience">
+                        <div class="table-header">WORK EXPERIENCE</div>
+                        
+                        <div class="exp-row">
+                            <div class="exp-role">Software Developer Intern</div>
+                            <div class="exp-details">
+                                <div class="exp-company">Haven Influence</div>
+                                <div class="exp-date">June 2025 - Feb 2026</div>
+                            </div>
+                        </div>
+                        
+                        <div class="exp-row">
+                            <div class="exp-role">Web Developer</div>
+                            <div class="exp-details">
+                                <div class="exp-company">Google Developers Group</div>
+                                <div class="exp-date">Oct 2024 - Present</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </section>
+
+
+        <!-- Contact Section -->
         <!-- Contact Section -->
         <section id="contact" class="section-padding">
-            <div class="section-header">
-                <h2>04. CONTACT_ME</h2>
-                <div class="line"></div>
+            <div class="devolio-badge" style="margin: 0 auto 4rem auto; display: flex; justify-content: center; width: max-content;">
+                <span class="icon">👤</span> CONTACT
             </div>
-            <div class="contact-container brutal-box">
-                <div class="contact-info">
-                    <h3>INITIATE_COMMS</h3>
-                    <p>I will read all emails. Send me any message you want and I'll get back to you.</p>
-                    <p>I need your Name and Email Address, but you won't receive anything other than your reply.</p>
-                    
-                    <div class="social-links">
-                        <a href="#" class="brutal-link">[ GITHUB ]</a>
-                        <a href="#" class="brutal-link">[ LINKEDIN ]</a>
-                        <a href="#" class="brutal-link">[ TWITTER ]</a>
-                    </div>
+            
+            <h2 class="devolio-heading" style="text-align: center; margin: 0 auto 4rem auto; display: block;">Have an Idea? Let's Make It Real</h2>
+            
+            <div class="retro-terminal">
+                <div class="retro-terminal-header">
+                    <span class="prompt">&gt;_ /CONTACT FORM</span>
                 </div>
-                <form class="contact-form" onsubmit="event.preventDefault();">
-                    <div class="form-group">
-                        <label for="name">NAME</label>
-                        <input type="text" id="name" placeholder="ENTER_NAME" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="email">EMAIL</label>
-                        <input type="email" id="email" placeholder="ENTER_EMAIL" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="message">MESSAGE</label>
-                        <textarea id="message" rows="5" placeholder="ENTER_MESSAGE" required></textarea>
-                    </div>
-                    <button type="submit" class="brutal-btn submit-btn">TRANSMIT</button>
-                </form>
+                <div class="retro-terminal-body">
+                    <form class="retro-contact-form" onsubmit="event.preventDefault();">
+                        <div class="retro-form-group">
+                            <label for="retro-name">FULL NAME*</label>
+                            <input type="text" id="retro-name" placeholder="[Your Name]" required>
+                        </div>
+                        <div class="retro-form-group">
+                            <label for="retro-email">EMAIL*</label>
+                            <input type="email" id="retro-email" placeholder="[example@gmail.com]" required>
+                        </div>
+                        <div class="retro-form-group">
+                            <label for="retro-location">LOCATION*</label>
+                            <select id="retro-location" required>
+                                <option value="" disabled selected>Select...</option>
+                                <option value="remote">Remote</option>
+                                <option value="onsite">On-site</option>
+                                <option value="hybrid">Hybrid</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        <div class="retro-form-group">
+                            <label for="retro-message">MESSAGE*</label>
+                            <textarea id="retro-message" rows="4" placeholder="[Your Message]" required></textarea>
+                        </div>
+                        <button type="submit" class="retro-submit-btn">SUBMIT</button>
+                    </form>
+                </div>
             </div>
         </section>
     </main>
