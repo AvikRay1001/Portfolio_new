@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Avik Ray | Portfolio</title>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;400;700;800&family=Space+Grotesk:wght@300;400;600;700&family=Kalam:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=21">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;400;700;800&family=Space+Grotesk:wght@300;400;600;700&family=Kalam:wght@400;700&family=Sacramento&family=Tillana:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=36">
     
     <!-- Tegaki Import Map -->
     <script type="importmap">
@@ -305,30 +305,25 @@
                     <span class="prompt">&gt;_ /CONTACT FORM</span>
                 </div>
                 <div class="retro-terminal-body">
-                    <form class="retro-contact-form" onsubmit="event.preventDefault();">
+                    <form class="retro-contact-form" id="retro-contact-form" novalidate>
                         <div class="retro-form-group">
                             <label for="retro-name">FULL NAME*</label>
-                            <input type="text" id="retro-name" placeholder="[Your Name]" required>
+                            <input type="text" id="retro-name" placeholder="[Your Name]">
+                            <span class="retro-error" id="error-name"></span>
                         </div>
                         <div class="retro-form-group">
                             <label for="retro-email">EMAIL*</label>
-                            <input type="email" id="retro-email" placeholder="[example@gmail.com]" required>
+                            <input type="email" id="retro-email" placeholder="[example@gmail.com]">
+                            <span class="retro-error" id="error-email"></span>
                         </div>
-                        <div class="retro-form-group">
-                            <label for="retro-location">LOCATION*</label>
-                            <select id="retro-location" required>
-                                <option value="" disabled selected>Select...</option>
-                                <option value="remote">Remote</option>
-                                <option value="onsite">On-site</option>
-                                <option value="hybrid">Hybrid</option>
-                                <option value="other">Other</option>
-                            </select>
-                        </div>
+
                         <div class="retro-form-group">
                             <label for="retro-message">MESSAGE*</label>
-                            <textarea id="retro-message" rows="4" placeholder="[Your Message]" required></textarea>
+                            <textarea id="retro-message" rows="4" placeholder="[Your Message]"></textarea>
+                            <span class="retro-error" id="error-message"></span>
                         </div>
                         <button type="submit" class="retro-submit-btn">SUBMIT</button>
+                        <div class="retro-form-success" id="retro-form-success">> MESSAGE_SENT. I'll get back to you shortly.</div>
                     </form>
                 </div>
             </div>
@@ -336,7 +331,7 @@
     </main>
 
     <footer class="brutal-footer">
-        <p>&copy; 2026 Avik Ray. System Online.</p>
+        <p>&copy; 2026 Avik Ray.</p>
         <a href="#home" class="back-to-top">[ BACK_TO_TOP ]</a>
     </footer>
 

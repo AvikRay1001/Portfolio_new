@@ -370,8 +370,8 @@ a {
 
 .devolio-card-inner p {
     color: var(--bg-color);
-    font-family: var(--font-mono);
-    font-size: 1.2rem;
+    font-family: 'Kalam', cursive;
+    font-size: 1.5rem;
     line-height: 1.6;
     margin-bottom: 1.5rem;
 }
@@ -404,8 +404,9 @@ a {
     color: var(--bg-color);
     background-color: var(--primary-color);
     padding: 0.5rem 1rem;
-    font-size: 1rem;
-    font-weight: bold;
+    font-family: 'Tillana', cursive;
+    font-size: 1.1rem;
+    font-weight: normal;
     user-select: none;
     cursor: grab;
     z-index: 10;
@@ -497,8 +498,9 @@ a {
     background-color: var(--primary-color);
     color: var(--bg-color);
     border: none;
-    font-family: var(--font-mono);
-    font-size: 1.2rem;
+    font-family: 'Tillana', cursive;
+    font-size: 1.3rem;
+    font-weight: 600;
     cursor: pointer;
     text-align: left;
     transition: background-color 0.2s;
@@ -531,7 +533,10 @@ a {
 
 .accordion-content p {
     margin: 0;
-    font-size: 1rem;
+    font-family: 'Kalam', cursive;
+    font-size: 1.1rem;
+    font-weight: 400;
+    line-height: 1.7;
 }
 
 /* Projects Section */
@@ -554,7 +559,7 @@ a {
 }
 
 .projects-main-title {
-    font-family: var(--font-mono);
+    font-family: 'Kalam', cursive;
     font-size: 2.5rem;
     max-width: 800px;
     text-align: center;
@@ -663,8 +668,8 @@ a {
     border-bottom: 2px solid rgba(255, 255, 255, 0.1);
     padding-bottom: 1rem;
     margin-bottom: 2rem;
-    font-family: var(--font-mono);
-    font-weight: bold;
+    font-family: 'Kalam', cursive;
+    font-weight: normal;
     text-transform: uppercase;
     transition: all 0.4s ease;
 }
@@ -688,12 +693,13 @@ a {
 }
 
 .bento-card h3 {
+    font-family: 'Tillana', cursive;
     font-size: 3.5rem;
     line-height: 1;
     margin-bottom: 1.5rem;
-    text-transform: uppercase;
-    font-weight: 900;
-    letter-spacing: -2px;
+    text-transform: none;
+    font-weight: 600;
+    letter-spacing: 0;
 }
 
 .brutal-tags {
@@ -704,13 +710,13 @@ a {
 }
 
 .brutal-tag {
-    font-family: var(--font-mono);
-    font-size: 0.85rem;
+    font-family: 'Kalam', cursive;
+    font-size: 0.9rem;
     padding: 0.5rem 1rem;
     border: 1px solid rgba(255, 255, 255, 0.2);
     background: rgba(0, 0, 0, 0.2);
     text-transform: uppercase;
-    font-weight: bold;
+    font-weight: normal;
     transition: all 0.4s ease;
 }
 
@@ -831,6 +837,9 @@ a {
     justify-content: space-between;
     align-items: center;
     margin-top: 4rem;
+    font-family: 'Kalam', cursive;
+    font-size: 1.5rem;
+    font-weight: 700;
 }
 
 /* Responsive */
@@ -986,7 +995,10 @@ a {
 }
 
 .retro-terminal-header .prompt {
-    font-size: 1.2rem;
+    font-family: 'Tillana', cursive;
+    font-size: 1.3rem;
+    font-weight: 700;
+    letter-spacing: 1px;
 }
 
 .retro-terminal-body {
@@ -1015,7 +1027,10 @@ a {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-    font-size: 1.2rem;
+    font-family: 'Kalam', cursive;
+    font-size: 1.35rem;
+    font-weight: 400;
+    line-height: 1.7;
 }
 
 .resume-info p {
@@ -1031,8 +1046,11 @@ a {
     background-color: var(--primary-color);
     color: var(--bg-color);
     text-align: center;
-    font-weight: bold;
+    font-family: 'Tillana', cursive;
+    font-size: 1.1rem;
+    font-weight: 700;
     padding: 0.5rem;
+    letter-spacing: 2px;
     border-bottom: 2px solid var(--primary-color);
 }
 
@@ -1048,9 +1066,11 @@ a {
 }
 
 .exp-role {
-    font-weight: bold;
-    font-size: 1.1rem;
+    font-family: 'Tillana', cursive;
+    font-weight: 700;
+    font-size: 1.2rem;
     align-self: center;
+    letter-spacing: 0.5px;
 }
 
 .exp-details {
@@ -1058,12 +1078,15 @@ a {
 }
 
 .exp-company {
-    font-weight: bold;
+    font-family: 'Kalam', cursive;
+    font-weight: 600;
+    font-size: 1.05rem;
     margin-bottom: 0.3rem;
 }
 
 .exp-date {
-    font-size: 0.9rem;
+    font-family: 'Kalam', cursive;
+    font-size: 0.95rem;
     opacity: 0.8;
 }
 
@@ -1174,4 +1197,58 @@ a {
     background-color: var(--bg-color);
     color: var(--primary-color);
     box-shadow: 5px 5px 0px rgba(255, 255, 255, 0.2);
+}
+
+/* Custom Form Validation Errors */
+.retro-error {
+    display: none;
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    color: #ff4d4d;
+    padding: 0.4rem 0.8rem;
+    border-left: 3px solid #ff4d4d;
+    background: rgba(255, 77, 77, 0.08);
+    animation: errorFadeIn 0.25s ease;
+}
+
+.retro-error::before {
+    content: '> ';
+    opacity: 0.7;
+}
+
+.retro-error.visible {
+    display: block;
+}
+
+.retro-form-group input.input-error,
+.retro-form-group textarea.input-error {
+    border-color: #ff4d4d;
+    box-shadow: 0 0 8px rgba(255, 77, 77, 0.25);
+}
+
+.retro-form-group input.input-success,
+.retro-form-group textarea.input-success {
+    border-color: #4dff91;
+}
+
+.retro-form-success {
+    display: none;
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    color: #4dff91;
+    text-align: center;
+    padding: 1rem;
+    border: 1px solid #4dff91;
+    background: rgba(77, 255, 145, 0.05);
+    margin-top: 0.5rem;
+    letter-spacing: 1px;
+}
+
+.retro-form-success.visible {
+    display: block;
+}
+
+@keyframes errorFadeIn {
+    from { opacity: 0; transform: translateX(-6px); }
+    to   { opacity: 1; transform: translateX(0); }
 }

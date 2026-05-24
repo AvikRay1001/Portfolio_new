@@ -490,3 +490,109 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 });
+
+// Contact Form — Custom Validation
+document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("retro-contact-form");
+    if (!form) return;
+
+    const fields = {
+        name: {
+            input: document.getElementById("retro-name"),
+            error: document.getElementById("error-name"),
+            validate(val) {
+                if (!val) return "// ERR: Name field cannot be empty.";
+                if (val.length < 2) return "// ERR: Name must be at least 2 characters.";
+                return null;
+            }
+        },
+        email: {
+            input: document.getElementById("retro-email"),
+            error: document.getElementById("error-email"),
+            validate(val) {
+                if (!val) return "// ERR: Email field cannot be empty.";
+                if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)) return "// ERR: Enter a valid email address.";
+                return null;
+            }
+        },
+        message: {
+            input: document.getElementById("retro-message"),
+            error: document.getElementById("error-message"),
+            validate(val) {
+                if (!val) return "// ERR: Message field cannot be empty.";
+                if (val.length < 10) return "// ERR: Message must be at least 10 characters.";
+                return null;
+            }
+        }
+    };
+
+    const successBox = document.getElementById("retro-form-success");
+
+    const errorTimers = {};
+
+    function showError(field, msg, key) {
+        field.error.textContent = msg;
+        field.error.classList.add("visible");
+        field.input.classList.add("input-error");
+        field.input.classList.remove("input-success");
+
+        // Auto-dismiss after 3 seconds
+        clearTimeout(errorTimers[key]);
+        errorTimers[key] = setTimeout(() => clearError(field), 3000);
+    }
+
+    function clearError(field) {
+        field.error.textContent = "";
+        field.error.classList.remove("visible");
+        field.input.classList.remove("input-error");
+    }
+
+    function markSuccess(field) {
+        clearError(field);
+        field.input.classList.add("input-success");
+    }
+
+    // Live validation on blur
+    Object.entries(fields).forEach(([key, field]) => {
+        field.input.addEventListener("blur", () => {
+            const val = field.input.value.trim();
+            const err = field.validate(val);
+            if (err) showError(field, err, key);
+            else markSuccess(field);
+        });
+
+        // Clear error on input
+        field.input.addEventListener("input", () => {
+            if (field.error.classList.contains("visible")) {
+                const val = field.input.value.trim();
+                if (!field.validate(val)) markSuccess(field);
+            }
+        });
+    });
+
+    // Submit validation
+    form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        let valid = true;
+
+        Object.entries(fields).forEach(([key, field]) => {
+            const val = field.input.value.trim();
+            const err = field.validate(val);
+            if (err) {
+                showError(field, err, key);
+                valid = false;
+            } else {
+                markSuccess(field);
+            }
+        });
+
+        if (valid) {
+            successBox.classList.add("visible");
+            form.reset();
+            Object.values(fields).forEach(f => {
+                f.input.classList.remove("input-success");
+            });
+            setTimeout(() => successBox.classList.remove("visible"), 5000);
+        }
+    });
+});
