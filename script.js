@@ -61,7 +61,7 @@ const phrases = [
 
 document.addEventListener("DOMContentLoaded", () => {
     const el = document.getElementById("scramble-text");
-    if(el) {
+    if (el) {
         const fx = new TextScramble(el);
         let counter = 0;
         const next = () => {
@@ -102,58 +102,229 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-// Animated ASCII Background (Cyber-Brutalist Binary Rain)
+// Animated Halftone Portrait Background — optimised with pre-render + dirty flag
 document.addEventListener("DOMContentLoaded", () => {
     const canvas = document.getElementById('ascii-canvas');
-    if (canvas) {
-        const ctx = canvas.getContext('2d');
-        
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    canvas.style.willChange = 'contents'; // hint browser to GPU-layer the canvas
+
+    const image = new Image();
+    image.src = 'linkedinPhoto.png';
+
+    // Each cell: { alpha: 0..1, r, g, b: 0-255 }
+    let dotGrid = [];
+    let cols = 0, rows = 0, blockSize = 5;
+
+    // Pre-rendered offscreen of ALL white dots (drawn once, blitted every frame)
+    let staticCanvas = null;
+    let staticCtx    = null;
+
+    // Mouse state
+    let mouseX = -9999, mouseY = -9999;
+    let dirty  = true;  // only redraw when something changed
+    const COLOR_RADIUS = 200;
+
+    window.addEventListener('mousemove', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const nx = e.clientX - rect.left;
+        const ny = e.clientY - rect.top;
+        if (nx !== mouseX || ny !== mouseY) {
+            mouseX = nx;
+            mouseY = ny;
+            dirty  = true;
         }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
+    });
 
-        // Using dense ASCII characters for the cyber brutalist effect
-        const chars = '@#%*+=-:. '.split('');
-        const fontSize = 12; // Smaller font creates denser columns
-        let columns = Math.floor(canvas.width / fontSize) + 1;
-        let drops = [];
+    document.addEventListener('mouseleave', () => {
+        mouseX = -9999;
+        mouseY = -9999;
+        dirty  = true;
+    });
 
-        for (let x = 0; x < columns; x++) {
-            drops[x] = Math.random() * (canvas.height / fontSize);
+    image.onload = () => {
+
+        function initAscii() {
+            canvas.width  = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            blockSize = canvas.width < 768 ? 4 : 5;
+            cols = Math.floor(canvas.width  / blockSize);
+            rows = Math.floor(canvas.height / blockSize);
+
+            // Offscreen 1: black bg for luminance
+            const grayOff = document.createElement('canvas');
+            grayOff.width  = cols;
+            grayOff.height = rows;
+            const grayCtx = grayOff.getContext('2d');
+
+            // Offscreen 2: transparent for original RGB color
+            const colorOff = document.createElement('canvas');
+            colorOff.width  = cols;
+            colorOff.height = rows;
+            const colorCtx = colorOff.getContext('2d');
+
+            const imgRatio    = image.width / image.height;
+            const canvasRatio = cols / rows;
+            let drawWidth, drawHeight, offsetX, offsetY;
+            const minOffsetY = 90 / blockSize;
+
+            if (canvasRatio > 1) {
+                drawWidth  = cols * 0.52;
+                drawHeight = drawWidth / imgRatio;
+                offsetX    = cols - drawWidth - (cols * 0.01);
+                offsetY    = Math.max((rows - drawHeight) * 0.38, minOffsetY);
+            } else {
+                drawWidth  = cols * 0.95;
+                drawHeight = drawWidth / imgRatio;
+                offsetX    = (cols - drawWidth) / 2;
+                offsetY    = Math.max((rows - drawHeight) * 0.3, minOffsetY);
+            }
+
+            grayCtx.fillStyle = 'black';
+            grayCtx.fillRect(0, 0, cols, rows);
+            grayCtx.drawImage(image, offsetX, offsetY, drawWidth, drawHeight);
+
+            colorCtx.clearRect(0, 0, cols, rows);
+            colorCtx.drawImage(image, offsetX, offsetY, drawWidth, drawHeight);
+
+            const grayData  = grayOff.getContext('2d').getImageData(0, 0, cols, rows).data;
+            const colorData = colorCtx.getImageData(0, 0, cols, rows).data;
+
+            const portraitCX = offsetX + drawWidth  * 0.50;
+            const portraitCY = offsetY + drawHeight * 0.40;
+            const rx = drawWidth  * 0.56;
+            const ry = drawHeight * 0.54;
+
+            dotGrid = [];
+            for (let y = 0; y < rows; y++) {
+                const row = [];
+                for (let x = 0; x < cols; x++) {
+                    const i = (y * cols + x) * 4;
+                    const gR = grayData[i], gG = grayData[i+1], gB = grayData[i+2], gA = grayData[i+3];
+                    let brightness = 0;
+                    if (gA > 0) {
+                        brightness = (gR * 0.299 + gG * 0.587 + gB * 0.114) * (gA / 255);
+                        brightness = Math.min(255, Math.max(0, (brightness - 15) * 1.4));
+                    }
+                    const ndx  = (x - portraitCX) / rx;
+                    const ndy  = (y - portraitCY) / ry;
+                    const dist = Math.sqrt(ndx * ndx + ndy * ndy);
+                    let fade = Math.max(0, 1.0 - dist);
+                    fade = fade * fade * (3 - 2 * fade);
+                    fade = fade * fade * (3 - 2 * fade);
+                    row.push({
+                        alpha: (brightness / 255) * fade,
+                        r: colorData[i], g: colorData[i+1], b: colorData[i+2]
+                    });
+                }
+                dotGrid.push(row);
+            }
+
+            // --- Pre-render all white dots into a static offscreen canvas ---
+            staticCanvas = document.createElement('canvas');
+            staticCanvas.width  = canvas.width;
+            staticCanvas.height = canvas.height;
+            staticCtx = staticCanvas.getContext('2d');
+
+            const maxR = (blockSize * 0.9) / 2;
+            // Build one big path for all white dots of the same alpha bucket
+            // Group dots into ~20 alpha buckets to minimise fillStyle changes
+            const BUCKETS = 20;
+            const bucketPaths  = new Array(BUCKETS).fill(null).map(() => []);
+
+            for (let y = 0; y < rows; y++) {
+                for (let x = 0; x < cols; x++) {
+                    const alpha = dotGrid[y][x].alpha;
+                    if (alpha < 0.008) continue;
+                    const bucket = Math.min(BUCKETS - 1, Math.floor(alpha * BUCKETS));
+                    bucketPaths[bucket].push({
+                        cx: x * blockSize + blockSize / 2,
+                        cy: y * blockSize + blockSize / 2,
+                        r:  maxR * Math.sqrt(alpha),
+                        a:  Math.min(1, alpha * 1.2)
+                    });
+                }
+            }
+
+            for (let b = 0; b < BUCKETS; b++) {
+                if (bucketPaths[b].length === 0) continue;
+                const repAlpha = bucketPaths[b][0].a;
+                staticCtx.fillStyle = 'rgba(255,255,255,' + repAlpha + ')';
+                staticCtx.beginPath();
+                for (const d of bucketPaths[b]) {
+                    staticCtx.moveTo(d.cx + d.r, d.cy);
+                    staticCtx.arc(d.cx, d.cy, d.r, 0, Math.PI * 2);
+                }
+                staticCtx.fill();
+            }
+
+            dirty = true;
         }
 
         function draw() {
-            ctx.fillStyle = 'rgba(5, 5, 5, 0.08)'; // Lower alpha for longer, denser trails
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            requestAnimationFrame(draw); // schedule next frame first
 
-            ctx.fillStyle = 'rgba(255, 255, 255, 0.65)'; // More prominent text color
-            ctx.font = fontSize + 'px "JetBrains Mono", monospace';
+            if (!dirty || !staticCanvas) return; // nothing changed — skip work
+            dirty = false;
 
-            for (let i = 0; i < drops.length; i++) {
-                const text = chars[Math.floor(Math.random() * chars.length)];
-                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+            // 1. Blit the pre-rendered white-dot canvas (single GPU call)
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(staticCanvas, 0, 0);
 
-                if (drops[i] * fontSize > canvas.height && Math.random() > 0.98) {
-                    drops[i] = 0;
+            // 2. Color spotlight — only iterate cells inside a bounding box around cursor
+            if (mouseX >= 0 && mouseX < canvas.width && mouseY >= 0 && mouseY < canvas.height) {
+                const maxR         = (blockSize * 0.9) / 2;
+                const colorRadSq   = COLOR_RADIUS * COLOR_RADIUS;
+
+                const minCol = Math.max(0,        Math.floor((mouseX - COLOR_RADIUS) / blockSize));
+                const maxCol = Math.min(cols - 1, Math.ceil ((mouseX + COLOR_RADIUS) / blockSize));
+                const minRow = Math.max(0,        Math.floor((mouseY - COLOR_RADIUS) / blockSize));
+                const maxRow = Math.min(rows - 1, Math.ceil ((mouseY + COLOR_RADIUS) / blockSize));
+
+                for (let y = minRow; y <= maxRow; y++) {
+                    for (let x = minCol; x <= maxCol; x++) {
+                        const cell  = dotGrid[y][x];
+                        if (cell.alpha < 0.008) continue;
+
+                        const cx = x * blockSize + blockSize / 2;
+                        const cy = y * blockSize + blockSize / 2;
+                        const dx = cx - mouseX, dy = cy - mouseY;
+                        const dSq = dx * dx + dy * dy;
+                        if (dSq >= colorRadSq) continue;
+
+                        // Smoothstep blend factor: 1 at cursor center, 0 at radius edge
+                        const rawT = 1 - Math.sqrt(dSq) / COLOR_RADIUS;
+                        const t    = rawT * rawT * (3 - 2 * rawT);
+                        // Brighten the original color
+                        const brightFactor = 1.4; 
+                        const targetR = Math.min(255, cell.r * brightFactor);
+                        const targetG = Math.min(255, cell.g * brightFactor);
+                        const targetB = Math.min(255, cell.b * brightFactor);
+
+                        const dr   = Math.round(255 + (targetR - 255) * t);
+                        const dg   = Math.round(255 + (targetG - 255) * t);
+                        const db   = Math.round(255 + (targetB - 255) * t);
+
+                        // Erase the white dot, redraw with color
+                        ctx.clearRect(x * blockSize, y * blockSize, blockSize, blockSize);
+                        ctx.beginPath();
+                        ctx.arc(cx, cy, maxR * Math.sqrt(cell.alpha), 0, Math.PI * 2);
+                        ctx.fillStyle = 'rgba(' + dr + ',' + dg + ',' + db + ',' + Math.min(1, cell.alpha * 1.2) + ')';
+                        ctx.fill();
+                    }
                 }
-                drops[i]++;
             }
         }
 
-        // Re-initialize drops on resize
         window.addEventListener('resize', () => {
-            columns = Math.floor(canvas.width / fontSize) + 1;
-            drops = [];
-            for (let x = 0; x < columns; x++) {
-                drops[x] = Math.random() * (canvas.height / fontSize);
-            }
+            initAscii();
         });
 
-        setInterval(draw, 50);
-    }
+        initAscii();
+        draw();
+    };
 });
 
 // Typewriter effect for About heading
@@ -161,7 +332,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const text = "Building ideas into reality.";
     const typewriterElement = document.getElementById("typewriter-heading");
     let index = 0;
-    
+
     if (typewriterElement) {
         const observer = new IntersectionObserver((entries) => {
             if (entries[0].isIntersecting) {
@@ -169,7 +340,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 observer.disconnect();
             }
         }, { threshold: 0.3 });
-        
+
         const aboutSection = document.getElementById("about");
         if (aboutSection) {
             observer.observe(aboutSection);
@@ -190,7 +361,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const text = "What I do best";
     const typewriterElement = document.getElementById("typewriter-services");
     let index = 0;
-    
+
     if (typewriterElement) {
         const observer = new IntersectionObserver((entries) => {
             if (entries[0].isIntersecting) {
@@ -198,7 +369,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 observer.disconnect();
             }
         }, { threshold: 0.3 });
-        
+
         const servicesSection = document.getElementById("services");
         if (servicesSection) {
             observer.observe(servicesSection);
@@ -219,7 +390,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const text = "Some of the things I've built, loved, and occasionally debugged at 2 a.m";
     const typewriterElement = document.getElementById("typewriter-projects");
     let index = 0;
-    
+
     if (typewriterElement) {
         const observer = new IntersectionObserver((entries) => {
             if (entries[0].isIntersecting) {
@@ -227,7 +398,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 observer.disconnect();
             }
         }, { threshold: 0.3 });
-        
+
         const projectsSection = document.getElementById("projects");
         if (projectsSection) {
             observer.observe(projectsSection);
@@ -293,16 +464,16 @@ document.addEventListener("DOMContentLoaded", () => {
             const dx = e.clientX - lastMouse.x;
             const dy = e.clientY - lastMouse.y;
             const distance = Math.hypot(dx, dy);
-            
+
             distanceAccumulator += distance;
-            
+
             while (distanceAccumulator >= spacing) {
                 // Approximate the spawn position along the movement vector
                 const ratio = Math.max(0, (distance - (distanceAccumulator - spacing))) / distance || 0;
-                
+
                 particles.push({
                     // Offset by 12px right and 16px down to spawn from the tail of a standard cursor
-                    x: lastMouse.x + dx * ratio + 12 + (Math.random() - 0.5) * 4, 
+                    x: lastMouse.x + dx * ratio + 12 + (Math.random() - 0.5) * 4,
                     y: lastMouse.y + dy * ratio + 16 + (Math.random() - 0.5) * 4,
                     char: chars[Math.floor(Math.random() * chars.length)],
                     life: 1.0,
@@ -319,29 +490,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function animate() {
         ctx.clearRect(0, 0, width, height);
-        
+
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
 
         for (let i = particles.length - 1; i >= 0; i--) {
             let p = particles[i];
-            
+
             p.x += p.vx;
             p.y += p.vy;
             p.life -= 0.02; // Fade out speed
-            
+
             if (p.life <= 0) {
                 particles.splice(i, 1);
                 continue;
             }
-            
+
             // Characters shrink slightly as they fade
-            const size = Math.max(0.1, p.life) * 20; 
+            const size = Math.max(0.1, p.life) * 20;
             ctx.font = `bold ${size}px "JetBrains Mono", monospace`;
-            
+
             // Brutalist white fading to transparent
             ctx.fillStyle = `rgba(255, 255, 255, ${p.life})`;
-            
+
             ctx.fillText(p.char, p.x, p.y);
         }
 
@@ -354,22 +525,22 @@ document.addEventListener("DOMContentLoaded", () => {
 document.addEventListener("DOMContentLoaded", () => {
     const container = document.getElementById('physics-container');
     const skillItems = document.querySelectorAll('.skills-list li');
-    
+
     // Only run if elements exist and Matter is loaded
     if (!container || skillItems.length === 0 || typeof Matter === 'undefined') return;
 
     // Matter.js module aliases
     const Engine = Matter.Engine,
-          Runner = Matter.Runner,
-          Bodies = Matter.Bodies,
-          Composite = Matter.Composite,
-          Mouse = Matter.Mouse,
-          MouseConstraint = Matter.MouseConstraint;
+        Runner = Matter.Runner,
+        Bodies = Matter.Bodies,
+        Composite = Matter.Composite,
+        Mouse = Matter.Mouse,
+        MouseConstraint = Matter.MouseConstraint;
 
     // Create engine
     const engine = Engine.create();
     engine.gravity.y = 0.4; // Reduce gravity for a lighter, floatier feel
-    
+
     const width = container.clientWidth;
     const height = container.clientHeight;
     const wallThickness = 60;
@@ -383,16 +554,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Map DOM elements to Physics bodies
     const domBodies = [];
-    
+
     skillItems.forEach((item, index) => {
         // Read actual DOM size
         const w = item.offsetWidth;
         const h = item.offsetHeight;
-        
+
         // Stagger spawn positions horizontally
-        const xPos = Math.random() * (width - 100) + 50; 
+        const xPos = Math.random() * (width - 100) + 50;
         const yPos = -20 - (index * 30); // Spawn closer to the box top to reduce fall time
-        
+
         // Create physics body
         const body = Bodies.rectangle(xPos, yPos, w, h, {
             restitution: 0.6, // Bounciness
@@ -400,16 +571,16 @@ document.addEventListener("DOMContentLoaded", () => {
             frictionAir: 0.02,
             angle: Math.random() * 0.2 - 0.1 // Slight initial tilt
         });
-        
+
         Composite.add(engine.world, body);
-        
+
         domBodies.push({
             elem: item,
             body: body,
             w: w,
             h: h
         });
-        
+
         // Make element visible now that physics holds its state
         item.style.opacity = 1;
     });
@@ -433,17 +604,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Create runner
     const runner = Runner.create();
-    
+
     // Update DOM inside requestAnimationFrame loop to match physics
     function updateDOM() {
         domBodies.forEach((db) => {
             const { elem, body, w, h } = db;
             // Translate by top-left corner instead of center
-            elem.style.transform = `translate(${body.position.x - w/2}px, ${body.position.y - h/2}px) rotate(${body.angle}rad)`;
+            elem.style.transform = `translate(${body.position.x - w / 2}px, ${body.position.y - h / 2}px) rotate(${body.angle}rad)`;
         });
         requestAnimationFrame(updateDOM);
     }
-    
+
     // Wait until section is scrolled into view before dropping
     const observer = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting) {
@@ -452,9 +623,9 @@ document.addEventListener("DOMContentLoaded", () => {
             observer.disconnect(); // Only drop once
         }
     }, { threshold: 0.3 });
-    
+
     observer.observe(container);
-    
+
     // Handle window resize gracefully
     window.addEventListener('resize', () => {
         const newWidth = container.clientWidth;
@@ -571,7 +742,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Submit validation
-    form.addEventListener("submit", (e) => {
+    form.addEventListener("submit", async (e) => {
         e.preventDefault();
         let valid = true;
 
@@ -587,12 +758,61 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         if (valid) {
-            successBox.classList.add("visible");
-            form.reset();
-            Object.values(fields).forEach(f => {
-                f.input.classList.remove("input-success");
-            });
-            setTimeout(() => successBox.classList.remove("visible"), 5000);
+            const submitBtn = form.querySelector('.retro-submit-btn');
+            const originalBtnText = submitBtn.textContent;
+            submitBtn.textContent = 'SENDING...';
+            submitBtn.disabled = true;
+            submitBtn.style.opacity = '0.5';
+            submitBtn.style.cursor = 'not-allowed';
+
+            try {
+                const payload = {
+                    access_key: "d2e71211-9994-46b7-942d-8d5b76c456d7", // TODO: Replace with your Web3Forms access key
+                    name: fields.name.input.value.trim(),
+                    email: fields.email.input.value.trim(),
+                    message: fields.message.input.value.trim(),
+                };
+                console.log("Sending contact form payload:", payload);
+
+                const response = await fetch("https://api.web3forms.com/submit", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Accept: "application/json",
+                    },
+                    body: JSON.stringify(payload),
+                });
+
+                const result = await response.json();
+                console.log("Form submission response status:", response.status);
+                console.log("Form submission response result:", result);
+
+                if (response.status === 200) {
+                    successBox.textContent = "> MESSAGE_SENT. I'll get back to you shortly.";
+                    successBox.style.color = ""; // Revert to original color
+                    successBox.classList.add("visible");
+                    form.reset();
+                    Object.values(fields).forEach(f => {
+                        f.input.classList.remove("input-success");
+                    });
+                } else {
+                    console.error("Form submission failed:", response.status, result);
+                    successBox.textContent = "> ERROR_SENDING. Please try again.";
+                    successBox.style.color = "#ef4444";
+                    successBox.classList.add("visible");
+                }
+            } catch (error) {
+                console.error("Form submission encountered an error:", error);
+                successBox.textContent = "> ERROR_SENDING. Please check your connection.";
+                successBox.style.color = "#ef4444";
+                successBox.classList.add("visible");
+            } finally {
+                submitBtn.textContent = originalBtnText;
+                submitBtn.disabled = false;
+                submitBtn.style.opacity = '1';
+                submitBtn.style.cursor = 'pointer';
+                setTimeout(() => successBox.classList.remove("visible"), 5000);
+            }
         }
     });
 });

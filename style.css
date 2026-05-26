@@ -67,7 +67,7 @@ a {
     top: 20px;
     left: 5%;
     width: 90%;
-    background-color: transparent;
+    background-color: var(--bg-color);
     z-index: 1000;
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
@@ -222,13 +222,15 @@ a {
     display: flex;
     justify-content: center;
     align-items: center;
-    opacity: 0.45; /* Much more prominent background */
 }
 
 #ascii-canvas {
     width: 100%;
     height: 100%;
     display: block;
+    mix-blend-mode: screen;
+    opacity: 0.9;
+    pointer-events: none;
 }
 
 .hero-content {
