@@ -78,10 +78,18 @@ a {
 }
 
 .logo {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
     font-size: 1.2rem;
     font-weight: 400;
     line-height: 1.1;
     font-family: var(--font-mono);
+}
+
+.logo-img {
+    height: 40px;
+    width: auto;
 }
 
 .nav-links {
