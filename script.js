@@ -59,7 +59,7 @@ const phrases = [
     "ML & Data Science Enthusiast"
 ];
 
-document.addEventListener("DOMContentLoaded", () => {
+setTimeout(() => {
     const el = document.getElementById("scramble-text");
     if (el) {
         const fx = new TextScramble(el);
@@ -91,7 +91,7 @@ const observer = new IntersectionObserver((entries, observer) => {
     });
 }, observerOptions);
 
-document.addEventListener("DOMContentLoaded", () => {
+setTimeout(() => {
     document.querySelectorAll('section').forEach(section => {
         if (section.id !== 'home') {
             section.style.opacity = 0;
@@ -103,7 +103,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // Animated Halftone Portrait Background — optimised with pre-render + dirty flag
-document.addEventListener("DOMContentLoaded", () => {
+setTimeout(() => {
     const canvas = document.getElementById('ascii-canvas');
     if (!canvas) return;
 
@@ -318,7 +318,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // Typewriter effect for About heading
-document.addEventListener("DOMContentLoaded", () => {
+setTimeout(() => {
     const text = "Building ideas into reality.";
     const typewriterElement = document.getElementById("typewriter-heading");
     let index = 0;
@@ -347,7 +347,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // Typewriter effect for Services heading
-document.addEventListener("DOMContentLoaded", () => {
+setTimeout(() => {
     const text = "What I do best";
     const typewriterElement = document.getElementById("typewriter-services");
     let index = 0;
@@ -376,7 +376,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // Typewriter effect for Projects heading
-document.addEventListener("DOMContentLoaded", () => {
+setTimeout(() => {
     const text = "Some of the things I've built, loved, and occasionally debugged at 2 a.m";
     const typewriterElement = document.getElementById("typewriter-projects");
     let index = 0;
@@ -405,7 +405,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // Active Nav Link on Scroll
-document.addEventListener("DOMContentLoaded", () => {
+setTimeout(() => {
     const sections = document.querySelectorAll("section");
     const navLinks = document.querySelectorAll(".nav-links a:not(.btn-contact)");
 
@@ -428,7 +428,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // Canvas ASCII Trail Effect
-document.addEventListener("DOMContentLoaded", () => {
+setTimeout(() => {
     const canvas = document.getElementById("cursor-trail-canvas");
     if (!canvas || window.matchMedia('(pointer: coarse)').matches) return;
 
@@ -512,7 +512,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // Skills Physics using Matter.js
-document.addEventListener("DOMContentLoaded", () => {
+setTimeout(() => {
     const container = document.getElementById('physics-container');
     const skillItems = document.querySelectorAll('.skills-list li');
 
@@ -625,7 +625,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // Accordion Logic
-document.addEventListener("DOMContentLoaded", () => {
+setTimeout(() => {
     const accordionHeaders = document.querySelectorAll(".accordion-header");
 
     accordionHeaders.forEach(header => {
@@ -653,7 +653,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // Contact Form — Custom Validation
-document.addEventListener("DOMContentLoaded", () => {
+setTimeout(() => {
     const form = document.getElementById("retro-contact-form");
     if (!form) return;
 
