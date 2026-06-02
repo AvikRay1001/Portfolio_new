@@ -214,50 +214,40 @@ document.addEventListener("DOMContentLoaded", () => {
                     let fade = Math.max(0, 1.0 - dist);
                     fade = fade * fade * (3 - 2 * fade);
                     fade = fade * fade * (3 - 2 * fade);
+                    const colorBoost = 1.4;
                     row.push({
                         alpha: (brightness / 255) * fade,
-                        r: colorData[i], g: colorData[i+1], b: colorData[i+2]
+                        r: Math.min(255, colorData[i] * colorBoost), 
+                        g: Math.min(255, colorData[i+1] * colorBoost), 
+                        b: Math.min(255, colorData[i+2] * colorBoost)
                     });
                 }
                 dotGrid.push(row);
             }
 
-            // --- Pre-render all white dots into a static offscreen canvas ---
+            // --- Pre-render all colored dots into a static offscreen canvas ---
             staticCanvas = document.createElement('canvas');
             staticCanvas.width  = canvas.width;
             staticCanvas.height = canvas.height;
             staticCtx = staticCanvas.getContext('2d');
 
             const maxR = (blockSize * 0.9) / 2;
-            // Build one big path for all white dots of the same alpha bucket
-            // Group dots into ~20 alpha buckets to minimise fillStyle changes
-            const BUCKETS = 20;
-            const bucketPaths  = new Array(BUCKETS).fill(null).map(() => []);
 
             for (let y = 0; y < rows; y++) {
                 for (let x = 0; x < cols; x++) {
-                    const alpha = dotGrid[y][x].alpha;
-                    if (alpha < 0.008) continue;
-                    const bucket = Math.min(BUCKETS - 1, Math.floor(alpha * BUCKETS));
-                    bucketPaths[bucket].push({
-                        cx: x * blockSize + blockSize / 2,
-                        cy: y * blockSize + blockSize / 2,
-                        r:  maxR * Math.sqrt(alpha),
-                        a:  Math.min(1, alpha * 1.2)
-                    });
+                    const cell = dotGrid[y][x];
+                    if (cell.alpha < 0.008) continue;
+                    
+                    const cx = x * blockSize + blockSize / 2;
+                    const cy = y * blockSize + blockSize / 2;
+                    const r  = maxR * Math.sqrt(cell.alpha);
+                    const a  = Math.min(1, cell.alpha * 1.2);
+                    
+                    staticCtx.beginPath();
+                    staticCtx.arc(cx, cy, r, 0, Math.PI * 2);
+                    staticCtx.fillStyle = 'rgba(' + cell.r + ',' + cell.g + ',' + cell.b + ',' + a + ')';
+                    staticCtx.fill();
                 }
-            }
-
-            for (let b = 0; b < BUCKETS; b++) {
-                if (bucketPaths[b].length === 0) continue;
-                const repAlpha = bucketPaths[b][0].a;
-                staticCtx.fillStyle = 'rgba(255,255,255,' + repAlpha + ')';
-                staticCtx.beginPath();
-                for (const d of bucketPaths[b]) {
-                    staticCtx.moveTo(d.cx + d.r, d.cy);
-                    staticCtx.arc(d.cx, d.cy, d.r, 0, Math.PI * 2);
-                }
-                staticCtx.fill();
             }
 
             dirty = true;
@@ -303,9 +293,9 @@ document.addEventListener("DOMContentLoaded", () => {
                         const targetG = Math.min(255, cell.g * brightFactor);
                         const targetB = Math.min(255, cell.b * brightFactor);
 
-                        const dr   = Math.round(255 + (targetR - 255) * t);
-                        const dg   = Math.round(255 + (targetG - 255) * t);
-                        const db   = Math.round(255 + (targetB - 255) * t);
+                        const dr   = Math.round(cell.r + (targetR - cell.r) * t);
+                        const dg   = Math.round(cell.g + (targetG - cell.g) * t);
+                        const db   = Math.round(cell.b + (targetB - cell.b) * t);
 
                         // Erase the white dot, redraw with color
                         ctx.clearRect(x * blockSize, y * blockSize, blockSize, blockSize);

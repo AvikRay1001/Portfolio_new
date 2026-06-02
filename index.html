@@ -7,24 +7,12 @@
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;400;700;800&family=Space+Grotesk:wght@300;400;600;700&family=Kalam:wght@400;700&family=Sacramento&family=Tillana:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css?v=37">
     
-    <!-- Tegaki Import Map -->
-    <script type="importmap">
-      {
-        "imports": {
-          "tegaki/wc": "./node_modules/tegaki/dist/wc/index.mjs",
-          "tegaki/fonts/caveat": "./node_modules/tegaki/dist/fonts/caveat/bundle.mjs",
-          "tegaki/fonts/unknown": "./unknown/unknown/bundle.js",
-          "tegaki/fonts/sacramento": "./Sacramento/unknown/bundle.js",
-          "tegaki/fonts/suez-one": "./node_modules/tegaki/dist/fonts/suez-one/bundle.mjs"
-        }
-      }
-    </script>
     <!-- Tegaki Init -->
     <script type="module">
       import { registerTegakiElement } from 'tegaki/wc';
       import caveat from 'tegaki/fonts/caveat';
-      import unknownFont from 'tegaki/fonts/unknown';
-      import sacramentoFont from 'tegaki/fonts/sacramento';
+      import unknownFont from './unknown/unknown/bundle.js';
+      import sacramentoFont from './Sacramento/unknown/bundle.js';
       import suezOne from 'tegaki/fonts/suez-one';
       
       // Register custom element
@@ -300,31 +288,42 @@
             
             <h2 class="devolio-heading" style="text-align: center; margin: 0 auto 4rem auto; display: block;">Have an Idea? Let's Make It Real</h2>
             
-            <div class="retro-terminal">
-                <div class="retro-terminal-header">
-                    <span class="prompt">&gt;_ /CONTACT FORM</span>
+            <div class="contact-container">
+                <div class="contact-info">
+                    <h3 style="font-family: var(--font-mono); text-transform: uppercase;">Connect With Me</h3>
+                    <p style="font-family: 'Kalam', cursive; font-size: 1.5rem; line-height: 1.6;">I'm always open to discussing new projects, creative ideas or opportunities to be part of your visions.</p>
+                    <div class="social-links">
+                        <a href="https://github.com/AvikRay1001" target="_blank" rel="noopener noreferrer" class="brutal-link">[ GITHUB ]</a>
+                        <a href="https://www.linkedin.com/in/avikray/" target="_blank" rel="noopener noreferrer" class="brutal-link">[ LINKEDIN ]</a>
+                    </div>
                 </div>
-                <div class="retro-terminal-body">
-                    <form class="retro-contact-form" id="retro-contact-form" novalidate>
-                        <div class="retro-form-group">
-                            <label for="retro-name">FULL NAME*</label>
-                            <input type="text" id="retro-name" placeholder="[Your Name]">
-                            <span class="retro-error" id="error-name"></span>
-                        </div>
-                        <div class="retro-form-group">
-                            <label for="retro-email">EMAIL*</label>
-                            <input type="email" id="retro-email" placeholder="[example@gmail.com]">
-                            <span class="retro-error" id="error-email"></span>
-                        </div>
-
-                        <div class="retro-form-group">
-                            <label for="retro-message">MESSAGE*</label>
-                            <textarea id="retro-message" rows="4" placeholder="[Your Message]"></textarea>
-                            <span class="retro-error" id="error-message"></span>
-                        </div>
-                        <button type="submit" class="retro-submit-btn">SUBMIT</button>
-                        <div class="retro-form-success" id="retro-form-success">> MESSAGE_SENT. I'll get back to you shortly.</div>
-                    </form>
+                
+                <div class="retro-terminal">
+                    <div class="retro-terminal-header">
+                        <span class="prompt">&gt;_ /CONTACT FORM</span>
+                    </div>
+                    <div class="retro-terminal-body">
+                        <form class="retro-contact-form" id="retro-contact-form" novalidate>
+                            <div class="retro-form-group">
+                                <label for="retro-name">FULL NAME*</label>
+                                <input type="text" id="retro-name" placeholder="[Your Name]">
+                                <span class="retro-error" id="error-name"></span>
+                            </div>
+                            <div class="retro-form-group">
+                                <label for="retro-email">EMAIL*</label>
+                                <input type="email" id="retro-email" placeholder="[example@gmail.com]">
+                                <span class="retro-error" id="error-email"></span>
+                            </div>
+    
+                            <div class="retro-form-group">
+                                <label for="retro-message">MESSAGE*</label>
+                                <textarea id="retro-message" rows="4" placeholder="[Your Message]"></textarea>
+                                <span class="retro-error" id="error-message"></span>
+                            </div>
+                            <button type="submit" class="retro-submit-btn">SUBMIT</button>
+                            <div class="retro-form-success" id="retro-form-success">> MESSAGE_SENT. I'll get back to you shortly.</div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </section>
@@ -339,6 +338,6 @@
     <canvas id="cursor-trail-canvas"></canvas>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
-    <script src="script.js?v=8"></script>
+    <script type="module" src="script.js?v=8"></script>
 </body>
 </html>
