@@ -20,6 +20,7 @@
   "homepage": "https://github.com/AvikRay1001/Portfolio_new#readme",
   "description": "",
   "dependencies": {
+    "@vercel/analytics": "^2.0.1",
     "tegaki": "^0.17.1"
   },
   "devDependencies": {
